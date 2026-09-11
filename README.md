@@ -11,9 +11,6 @@ The conversion logic itself (loading a banner file and rendering text with
 it) is unchanged from the original `ascii-art` project — this project only
 adds an HTTP layer around it.
 
-## Authors
-
-- eliqss09@gmail.com
 
 ## Usage
 
