@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ASCII Art Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="topline">
+            <div class="brand">
+                <span class="tag">GO · HTTP</span>
+            </div>
+            <div class="status">
+                <span class="dot"></span> server online
+            </div>
+        </div>
+
+        <h1>ASCII Art Web</h1>
+        <p class="sub">render text as ASCII banners &mdash; <span class="path">standard / shadow / thinkertoy</span></p>
+
+        <div class="panel">
+            {{if .Error}}
+                <p class="error">{{.Error}}</p>
+            {{end}}
+
+            <form action="/ascii-art" method="POST">
+                <div class="field">
+                    <label class="field-label" for="text">text</label>
+                    <input type="text" id="text" name="text" value="{{.Text}}" placeholder="type something..." required>
+                </div>
+
+                <div class="field">
+                    <label class="field-label">banner</label>
+                    <div class="banners">
+                        <input type="radio" id="b-standard" name="banner" value="standard" {{if eq .Banner "standard"}}checked{{end}}>
+                        <label for="b-standard">standard</label>
+
+                        <input type="radio" id="b-shadow" name="banner" value="shadow" {{if eq .Banner "shadow"}}checked{{end}}>
+                        <label for="b-shadow">shadow</label>
+
+                        <input type="radio" id="b-thinkertoy" name="banner" value="thinkertoy" {{if eq .Banner "thinkertoy"}}checked{{end}}>
+                        <label for="b-thinkertoy">thinkertoy</label>
+                    </div>
+                </div>
+
+                <button type="submit">Generate →</button>
+            </form>
+        </div>
+
+        {{if .Result}}
+        <div class="terminal">
+            <div class="terminal-bar">
+                <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                <span class="title">result</span>
+            </div>
+            <pre class="result">{{.Result}}</pre>
+        </div>
+        {{end}}
+
+        <footer>ascii-art-web &middot; standard library only</footer>
+    </div>
+</body>
+</html>
