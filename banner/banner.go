@@ -34,6 +34,7 @@ func Load(name string) (map[rune][]string, error) {
 }
 
 func parse(data string) (map[rune][]string, error) {
+	data = strings.ReplaceAll(data, "\r\n", "\n")
 	lines := strings.Split(strings.TrimRight(data, "\n"), "\n")
 
 	m := make(map[rune][]string)

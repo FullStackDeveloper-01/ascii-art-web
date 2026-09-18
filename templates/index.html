@@ -6,22 +6,63 @@
     <title>ASCII Art Web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/img/logo.png">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="wrap">
-        <div class="topline">
-            <div class="brand">
-                <span class="tag">GO · HTTP</span>
-            </div>
-            <div class="status">
-                <span class="dot"></span> server online
+    <div class="grain" aria-hidden="true"></div>
+
+    {{if not .Result}}
+    <!-- شاشة الإقلاع تطلع كل مرة نفتح فيها الصفحة "فاضية" (يعني ما فيه نتيجة
+         بعد) — أول دخول للموقع، أو أي رفرش/reload عادي. تختفي بس بالحالة
+         الوحيدة اللي فيها نتيجة جاهزة نعرضها (بعد Generate ناجح)، عشان ما
+         يحجب النتيجة بثانيتين إضافيتين وهو أصلاً شافها قبل شوي. -->
+    <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
+        <div class="boot-line" style="--d:0s">$ connecting to server01...</div>
+        <div class="boot-line" style="--d:.5s">$ loading banners...</div>
+        <div class="boot-line" style="--d:1s">$ ready_</div>
+    </div>
+    {{end}}
+
+    <nav class="topnav2">
+        <div class="topnav2-brand">
+            <img class="topnav2-mark" src="/static/img/logo.png" alt="01">
+            <div>
+                <div class="topnav2-name">ASCII <span>ART</span></div>
+                <div class="topnav2-sub">01 &middot; WEB</div>
             </div>
         </div>
 
-        <h1>ASCII Art Web</h1>
-        <p class="sub">render text as ASCII banners &mdash; <span class="path">standard / shadow / thinkertoy</span></p>
+        <div class="kbnav">
+            <span class="kbglow"></span>
+            <a class="kbkey">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+                <span class="kbkey-name">Home</span>
+                <span class="kbkey-led"></span>
+            </a>
+        </div>
+
+        <div class="status">
+            <span class="dot"></span> <span class="status-text">server online</span>
+        </div>
+    </nav>
+    <div class="topnav2-strip"></div>
+
+    <div class="wrap">
+        <div class="hero-row">
+            <div>
+                <h1>ASCII <span class="accent-word">Art</span> Web</h1>
+                <p class="sub">render text as ASCII banners &mdash;
+                    <span class="banner-pill">standard</span>
+                    <span class="banner-pill">shadow</span>
+                    <span class="banner-pill">thinkertoy</span>
+                </p>
+            </div>
+            {{if .Sample}}
+            <pre class="hero-sample" aria-hidden="true">{{.Sample}}</pre>
+            {{end}}
+        </div>
 
         <div class="panel">
             {{if .Error}}
@@ -31,7 +72,12 @@
             <form action="/ascii-art" method="POST">
                 <div class="field">
                     <label class="field-label" for="text">text</label>
-                    <input type="text" id="text" name="text" value="{{.Text}}" placeholder="type something..." required>
+                    <div class="input-row">
+                        <input type="text" id="text" name="text" value="{{.Text}}" placeholder="type something..." required maxlength="10000" autofocus oninput="updateCharCount()">
+                        <button type="button" class="clear-btn" id="clearBtn" onclick="clearText()" title="Clear" aria-label="Clear text">&times;</button>
+                    </div>
+                    <div class="char-count" id="charCount">0 / 10000</div>
+                    <div class="limit-msg" id="limitMsg" role="status" aria-live="polite" hidden>You've reached the 10,000 character limit.</div>
                 </div>
 
                 <div class="field">
@@ -56,13 +102,19 @@
         <div class="terminal">
             <div class="terminal-bar">
                 <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-                <span class="title">result</span>
+                <span class="title">result &middot; {{.Banner}}</span>
+                <span class="copy-toast" id="copyToast" role="status" aria-live="polite">Copied!</span>
+                <button type="button" class="copy-btn" id="copyBtn" onclick="copyResult()" aria-label="Copy result to clipboard">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    copy
+                </button>
             </div>
-            <pre class="result">{{.Result}}</pre>
+            <pre class="result" id="resultText">{{.Result}}</pre>
+            <div class="result-cursor-row" aria-hidden="true"><span class="result-cursor">&#9612;</span></div>
         </div>
         {{end}}
-
-        <footer>ascii-art-web &middot; standard library only</footer>
     </div>
+
+    <script src="/static/app.js"></script>
 </body>
 </html>

@@ -1,118 +1,504 @@
+/* ---- semantic color system ----
+   --accent / --accent-2 / --accent-dim : brand + interactive (violet)
+   --green                              : success / online / copy confirmation
+   --red                                : error
+   --yellow                             : warning (approaching a limit)
+   Every new component should pull from these tokens instead of a new literal. */
 :root {
-    --bg: #0a0a0f;
-    --bg-dot: rgba(255, 255, 255, 0.035);
-    --panel: #101018;
-    --panel-2: #0c0c13;
-    --border: #232331;
-    --border-soft: #1a1a24;
-    --accent: #8b5cf6;
+    --bg: #08080a;
+    --panel: rgba(16, 16, 24, .62);
+    --panel-2: rgba(8, 10, 18, .55);
+    --border: rgba(124, 58, 237, .28);
+    --border-soft: rgba(255, 255, 255, .07);
+    --accent: #7c3aed;
     --accent-2: #a78bfa;
-    --accent-dim: rgba(139, 92, 246, 0.15);
-    --text: #e4e4e7;
-    --text-dim: #8b8b98;
-    --text-faint: #55555f;
-    --green: #22c55e;
-    --red: #ef4444;
-    --yellow: #eab308;
+    --accent-dim: rgba(124, 58, 237, .15);
+    --text: #e8ecf6;
+    --text-dim: #8b93b8;
+    --text-faint: #55596b;
+    --green: #3ddc91;
+    --red: #ff6b6b;
+    --yellow: #febc2e;
+    --mac-r: #ff5f57;
+    --mac-y: #febc2e;
+    --mac-g: #28c840;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --display: 'Sora', 'Inter', -apple-system, system-ui, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
 
 body {
-    font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
-    background:
-        radial-gradient(circle at 1px 1px, var(--bg-dot) 1px, transparent 0) 0 0 / 28px 28px,
-        var(--bg);
+    font-family: var(--font);
+    background: var(--bg);
     color: var(--text);
     margin: 0;
-    padding: 48px 20px 80px;
+    padding: 0 0 80px;
     min-height: 100vh;
+    position: relative;
 }
 
-.wrap {
-    max-width: 720px;
-    margin: 0 auto;
+/* ---- subtle film-grain texture over the whole page ---- */
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    opacity: .035;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-.topline {
+/* ---- boot sequence: a few lines fade in, then the whole thing fades away —
+   purely cosmetic, pointer-events:none from the start so it never blocks the
+   real page underneath, and skipped entirely for reduced-motion users below ---- */
+.boot-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--bg);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand .tag {
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 28px;
+    font-family: var(--mono);
+    font-size: 13px;
     color: var(--accent-2);
-    border: 1px solid var(--border);
-    background: var(--accent-dim);
-    padding: 3px 8px;
-    border-radius: 5px;
-    font-weight: 700;
+    pointer-events: none;
+    animation: bootOut .2s ease forwards;
+    animation-delay: 1.8s;
+}
+
+.boot-line {
+    opacity: 0;
+    transform: translateY(4px);
+    margin-bottom: 4px;
+    animation: bootLine .3s ease forwards;
+    animation-delay: var(--d);
+}
+
+@keyframes bootLine {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bootOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+
+/* ---- background layer 1: scattered starfield dots + faint violet grid ---- */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(1.6px 1.6px at 12% 18%, rgba(255,255,255,.55) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 32% 62%, rgba(255,255,255,.4) 50%, transparent 51%),
+        radial-gradient(1.8px 1.8px at 58% 28%, rgba(255,255,255,.5) 50%, transparent 51%),
+        radial-gradient(1.1px 1.1px at 75% 72%, rgba(255,255,255,.35) 50%, transparent 51%),
+        radial-gradient(1.4px 1.4px at 88% 15%, rgba(255,255,255,.45) 50%, transparent 51%),
+        radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,.3) 50%, transparent 51%),
+        radial-gradient(1.3px 1.3px at 47% 8%, rgba(255,255,255,.4) 50%, transparent 51%),
+        radial-gradient(1px 1px at 65% 92%, rgba(255,255,255,.3) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 8% 45%, rgba(255,255,255,.4) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 95% 55%, rgba(255,255,255,.35) 50%, transparent 51%),
+        linear-gradient(var(--accent-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--accent-dim) 1px, transparent 1px);
+    background-repeat: repeat;
+    background-size: 600px 600px, 600px 600px, 600px 600px, 600px 600px, 600px 600px,
+        600px 600px, 600px 600px, 600px 600px, 600px 600px, 600px 600px, 46px 46px, 46px 46px;
+}
+
+/* ---- background layer 2: slow radar-style scan line sweeping top to bottom.
+   Uses --accent-dim so this also re-tints with the selected banner. ---- */
+body::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -200px;
+    height: 200px;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, var(--accent-dim) 50%, transparent 100%);
+    animation: hudScan 6s linear infinite;
+}
+
+@keyframes hudScan {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(calc(100vh + 200px)); }
+}
+
+/* ---- top navbar: exact port of .topnav2 from the 01 Tester project (grid: brand | home button | status) ---- */
+.topnav2 {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    height: 76px;
+    padding: 0 24px;
+    background: rgba(10, 10, 15, .92);
+    backdrop-filter: blur(20px) saturate(1.05);
+    -webkit-backdrop-filter: blur(20px) saturate(1.05);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+/* giant faint "01" watermark behind the navbar content — same effect as the real site's
+   .topnav2::before, always on here since we only ever have one page (no on-landing/on-dashboard
+   toggle needed) */
+.topnav2::before {
+    content: '01';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 108px;
+    line-height: 1;
+    letter-spacing: -2px;
+    color: var(--accent-dim);
+    pointer-events: none;
+    z-index: 0;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.topnav2-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    grid-column: 1;
+    justify-self: start;
+    position: relative;
+    z-index: 1;
+}
+
+.topnav2-mark {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    /* glow now follows the selected banner's accent color instead of a fixed
+       violet, so the logo visibly matches whichever "mood" is active */
+    filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 20px var(--accent-dim)) drop-shadow(0 0 36px var(--accent-dim));
+}
+
+.topnav2-name {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--text);
+}
+
+.topnav2-name span {
+    color: var(--accent-2);
+}
+
+.topnav2-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+/* ---- center: the single "Home" button + the circular 01 emblem, same as the real site's .kbnav ---- */
+.kbnav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    grid-column: 2;
+    position: relative;
+    z-index: 1;
+}
+
+.kbkey {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 18px;
+    height: 48px;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.kbkey svg {
+    width: 17px;
+    height: 17px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.kbkey-name {
+    font-size: 10.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+/* always lit — this is our only page, so the "active" led never turns off.
+   Uses --accent (not a fixed color) so it re-tints with the selected banner,
+   same as everything else in the "mood" system below. */
+.kbkey-led {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+/* the spotlight beam above the active key — ported from the 01 Tester navbar's .kbglow, always on
+   here since Home is the only (and permanently active) destination */
+.kbglow {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 26px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent-2);
+    box-shadow: 0 46px 22px var(--accent-2);
+    pointer-events: none;
+}
+
+.kbglow::after {
+    content: '';
+    position: absolute;
+    left: -50%;
+    top: 5px;
+    width: 200%;
+    height: 50px;
+    pointer-events: none;
+    clip-path: polygon(8% 100%, 32% 0, 68% 0, 92% 100%);
+    background: linear-gradient(to bottom, var(--accent-dim), transparent);
+}
+
+/* ---- glowing violet line under the navbar (same as the real site's .topnav2-strip) ---- */
+.topnav2-strip {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    box-shadow: 0 0 12px 1px var(--accent);
+    position: sticky;
+    top: 76px;
+    z-index: 9;
 }
 
 .status {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-size: 12px;
+    font-family: var(--mono);
     color: var(--text-dim);
+    grid-column: 3;
+    justify-self: end;
+    position: relative;
+    z-index: 1;
 }
 
 .dot {
+    position: relative;
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: var(--green);
     box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+.dot::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--green);
+    opacity: 0;
+    animation: ping 2s ease-out infinite;
+}
+
+@keyframes ping {
+    0%   { transform: scale(.4); opacity: .8; }
+    70%  { opacity: 0; }
+    100% { transform: scale(1.9); opacity: 0; }
+}
+
+.wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 20px 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- 404 page: same shell (nav + watermark + grain), just a centered
+   message instead of the generator panel ---- */
+.error-page {
+    text-align: center;
+    padding: 80px 20px 120px;
+}
+
+.error-ascii {
+    margin: 0 0 8px;
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 12px;
+    line-height: 1.15;
+    display: inline-block;
+}
+
+.error-page h1 {
+    margin: 0 0 8px;
+    font-family: var(--display);
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.error-page .sub {
+    margin: 0 0 24px;
+    color: var(--text-dim);
+    font-size: 14px;
+}
+
+.error-page .back-home {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent-2);
+    text-decoration: none;
+    border: 1px solid var(--accent-dim);
+    border-radius: 8px;
+    padding: 10px 18px;
+    transition: background .15s, border-color .15s;
+}
+
+.error-page .back-home:hover {
+    background: rgba(139, 92, 246, .08);
+    border-color: var(--accent);
+}
+
+/* ---- a small mood shift per banner style: whichever radio is checked re-tints
+   the accent tokens for everything inside .wrap (input focus ring, selected
+   banner pill, submit button, terminal border). Pure CSS, no JS. Falls back
+   gracefully to the default violet in browsers without :has() support. ---- */
+/* Scoped to body (not just .wrap) so the navbar's glow/LED — which sit
+   outside .wrap in the markup — re-tint too, not just the form below them. */
+body:has(#b-shadow:checked) {
+    --accent: #dc2626;
+    --accent-2: #f87171;
+    --accent-dim: rgba(220, 38, 38, .15);
+    --border: rgba(220, 38, 38, .28);
+}
+
+body:has(#b-thinkertoy:checked) {
+    --accent: #f59e0b;
+    --accent-2: #fcd34d;
+    --accent-dim: rgba(245, 158, 11, .15);
+    --border: rgba(245, 158, 11, .28);
+}
+
+.hero-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
 }
 
 h1 {
-    font-size: 26px;
-    font-weight: 800;
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 900;
     letter-spacing: -0.01em;
-    margin: 0 0 4px;
+    margin: 0 0 6px;
+    color: var(--text);
+}
+
+.accent-word {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* the live "01" preview, rendered server-side by the same banner/render
+   pipeline as every real submission — tiny and dim, a signature rather than
+   a second focal point. Hidden on narrow screens where it'd just crowd the title. */
+.hero-sample {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 9px;
+    line-height: 1.15;
+    color: var(--accent);
+    flex-shrink: 0;
+    user-select: none;
+}
+
+@media (max-width: 620px) {
+    .hero-sample { display: none; }
 }
 
 .sub {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     color: var(--text-dim);
     font-size: 13px;
     margin: 0 0 28px;
+    font-family: var(--font);
 }
 
-.sub .path { color: var(--accent-2); }
+.banner-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--accent-dim);
+    color: var(--accent-2);
+    letter-spacing: 0.02em;
+}
 
 .panel {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 20px 40px -20px rgba(139, 92, 246, 0.12);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.25), 0 20px 40px -20px var(--accent-dim);
 }
 
 .field { margin-bottom: 20px; }
 
 label.field-label {
     display: block;
+    font-family: var(--mono);
     font-size: 12px;
     color: var(--text-dim);
     margin-bottom: 8px;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 label.field-label::before {
@@ -120,14 +506,18 @@ label.field-label::before {
     color: var(--text-faint);
 }
 
+.input-row {
+    position: relative;
+}
+
 input[type="text"] {
     width: 100%;
     background: var(--panel-2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-soft);
     color: var(--text);
-    padding: 12px 14px;
+    padding: 12px 40px 12px 14px;
     font-size: 15px;
-    font-family: inherit;
+    font-family: var(--font);
     border-radius: 8px;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
@@ -136,6 +526,51 @@ input[type="text"] {
 input[type="text"]:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.clear-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-faint);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+
+.clear-btn:hover {
+    background: rgba(255,255,255,.06);
+    color: var(--text-dim);
+}
+
+.char-count {
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: right;
+    transition: color .15s;
+}
+
+.char-count.warn { color: var(--yellow); }
+.char-count.danger { color: var(--red); }
+
+.limit-msg {
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    text-align: right;
 }
 
 .banners {
@@ -153,10 +588,12 @@ input[type="text"]:focus {
 
 .banners label {
     cursor: pointer;
+    font-family: var(--font);
+    font-weight: 500;
     font-size: 13px;
     padding: 9px 16px;
     border-radius: 7px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-soft);
     background: var(--panel-2);
     color: var(--text-dim);
     transition: all 0.15s;
@@ -180,9 +617,9 @@ button[type="submit"] {
     padding: 13px;
     font-size: 14px;
     font-weight: 700;
-    font-family: inherit;
+    font-family: var(--font);
     letter-spacing: 0.03em;
-    color: #0a0a0f;
+    color: #08080a;
     background: linear-gradient(135deg, var(--accent-2), var(--accent));
     border: none;
     border-radius: 8px;
@@ -198,11 +635,12 @@ button[type="submit"]:active { transform: scale(0.99); }
     align-items: center;
     gap: 8px;
     color: #fca5a5;
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(255, 107, 107, .08);
+    border: 1px solid rgba(255, 107, 107, .35);
     padding: 10px 14px;
     border-radius: 8px;
     font-size: 13px;
+    font-family: var(--font);
     margin-bottom: 20px;
 }
 
@@ -214,52 +652,127 @@ button[type="submit"]:active { transform: scale(0.99); }
 
 .terminal {
     margin-top: 24px;
+    margin-bottom: 40px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 11px;
     overflow: hidden;
     background: var(--panel-2);
+    box-shadow: 0 20px 40px -22px rgba(0,0,0,.55);
 }
 
 .terminal-bar {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: var(--panel);
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,.025);
     border-bottom: 1px solid var(--border-soft);
 }
 
-.terminal-bar .lights { display: flex; gap: 6px; }
+.terminal-bar .lights { display: flex; gap: 6px; margin-right: 2px; }
 .terminal-bar .lights span {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     display: inline-block;
 }
-.terminal-bar .lights .r { background: var(--red); }
-.terminal-bar .lights .y { background: var(--yellow); }
-.terminal-bar .lights .g { background: var(--green); }
+.terminal-bar .lights .r { background: var(--mac-r); }
+.terminal-bar .lights .y { background: var(--mac-y); }
+.terminal-bar .lights .g { background: var(--mac-g); }
 
 .terminal-bar .title {
+    font-family: var(--mono);
     font-size: 12px;
-    color: var(--text-faint);
+    color: var(--text-dim);
+    letter-spacing: .4px;
     margin-left: 4px;
+}
+
+.copy-btn {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s;
+}
+
+.copy-btn:hover {
+    color: var(--text);
+    border-color: var(--border);
+    background: rgba(255,255,255,.04);
+}
+
+.copy-btn svg { flex-shrink: 0; }
+
+/* inline fade (not a floating tooltip) — .terminal has overflow:hidden for its rounded
+   corners, which would clip anything positioned to float above this bar */
+.copy-toast {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.copy-toast.show {
+    opacity: 1;
 }
 
 pre.result {
     margin: 0;
-    padding: 20px;
+    padding: 20px 20px 0;
     overflow-x: auto;
     white-space: pre;
     line-height: 1.15;
     font-size: 13px;
-    color: var(--accent-2);
+    font-family: var(--mono);
+    color: var(--green);
 }
 
-footer {
-    text-align: center;
-    color: var(--text-faint);
-    font-size: 11px;
-    margin-top: 36px;
-    letter-spacing: 0.03em;
+.result-cursor-row {
+    padding: 4px 20px 16px;
+}
+
+.result-cursor {
+    display: inline-block;
+    font-family: var(--mono);
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+@media (max-width: 620px) {
+    .kbnav { display: none; }
+}
+
+@media (max-width: 480px) {
+    .topnav2 { padding: 0 16px; gap: 12px; }
+    .topnav2-name { font-size: 13px; }
+    .status-text { display: none; }
+    .wrap { padding: 32px 14px 0; }
+    h1 { font-size: 24px; }
+    .panel { padding: 18px; }
+}
+
+/* ---- respect "reduce motion": skip the boot intro entirely (show the real
+   page immediately) and turn off the ambient animations, without ever
+   leaving anything permanently hidden ---- */
+@media (prefers-reduced-motion: reduce) {
+    .boot-overlay { display: none; }
+    body::after { animation: none; opacity: 0; }
+    .dot::before { animation: none; opacity: .4; }
+    .result-cursor { animation: none; }
 }
