@@ -5,7 +5,6 @@ import (
 	"strings"
 )
 
-
 func Render(text string, chars map[rune][]string) (string, error) {
 	if strings.Trim(text, "\n") == "" {
 		return text, nil
@@ -27,7 +26,6 @@ func Render(text string, chars map[rune][]string) (string, error) {
 	}
 	return out.String(), nil
 }
-
 
 func renderLine(line string, chars map[rune][]string) (string, error) {
 	runes := []rune(line)

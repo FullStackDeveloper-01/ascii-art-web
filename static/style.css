@@ -515,7 +515,7 @@ input[type="text"] {
     background: var(--panel-2);
     border: 1px solid var(--border-soft);
     color: var(--text);
-    padding: 12px 40px 12px 14px;
+    padding: 12px 14px;
     font-size: 15px;
     font-family: var(--font);
     border-radius: 8px;
@@ -526,51 +526,6 @@ input[type="text"] {
 input[type="text"]:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-dim);
-}
-
-.clear-btn {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 26px;
-    height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--text-faint);
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    transition: background .15s, color .15s;
-}
-
-.clear-btn:hover {
-    background: rgba(255,255,255,.06);
-    color: var(--text-dim);
-}
-
-.char-count {
-    margin-top: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-    text-align: right;
-    transition: color .15s;
-}
-
-.char-count.warn { color: var(--yellow); }
-.char-count.danger { color: var(--red); }
-
-.limit-msg {
-    margin-top: 4px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--red);
-    text-align: right;
 }
 
 .banners {
@@ -686,46 +641,6 @@ button[type="submit"]:active { transform: scale(0.99); }
     color: var(--text-dim);
     letter-spacing: .4px;
     margin-left: 4px;
-}
-
-.copy-btn {
-    all: unset;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-left: 8px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    padding: 4px 9px;
-    border-radius: 6px;
-    border: 1px solid var(--border-soft);
-    cursor: pointer;
-    transition: color .15s, border-color .15s, background .15s;
-}
-
-.copy-btn:hover {
-    color: var(--text);
-    border-color: var(--border);
-    background: rgba(255,255,255,.04);
-}
-
-.copy-btn svg { flex-shrink: 0; }
-
-/* inline fade (not a floating tooltip) — .terminal has overflow:hidden for its rounded
-   corners, which would clip anything positioned to float above this bar */
-.copy-toast {
-    margin-left: auto;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity .2s;
-}
-
-.copy-toast.show {
-    opacity: 1;
 }
 
 pre.result {

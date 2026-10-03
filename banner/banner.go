@@ -41,8 +41,15 @@ func parse(data string) (map[rune][]string, error) {
 	cursor := 0
 	for _, char := range characters {
 		cursor++
+		if cursor+8 > len(lines) {
+			return nil, fmt.Errorf("banner file is incomplete")
+		}
 		m[char] = lines[cursor : cursor+8]
 		cursor += 8
+	}
+
+	if cursor != len(lines) {
+		return nil, fmt.Errorf("banner file has unexpected length")
 	}
 
 	return m, nil

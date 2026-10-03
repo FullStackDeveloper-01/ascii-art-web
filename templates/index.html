@@ -14,10 +14,7 @@
     <div class="grain" aria-hidden="true"></div>
 
     {{if not .Result}}
-    <!-- شاشة الإقلاع تطلع كل مرة نفتح فيها الصفحة "فاضية" (يعني ما فيه نتيجة
-         بعد) — أول دخول للموقع، أو أي رفرش/reload عادي. تختفي بس بالحالة
-         الوحيدة اللي فيها نتيجة جاهزة نعرضها (بعد Generate ناجح)، عشان ما
-         يحجب النتيجة بثانيتين إضافيتين وهو أصلاً شافها قبل شوي. -->
+
     <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
         <div class="boot-line" style="--d:0s">$ connecting to server01...</div>
         <div class="boot-line" style="--d:.5s">$ loading banners...</div>
@@ -73,11 +70,8 @@
                 <div class="field">
                     <label class="field-label" for="text">text</label>
                     <div class="input-row">
-                        <input type="text" id="text" name="text" value="{{.Text}}" placeholder="type something..." required maxlength="10000" autofocus oninput="updateCharCount()">
-                        <button type="button" class="clear-btn" id="clearBtn" onclick="clearText()" title="Clear" aria-label="Clear text">&times;</button>
+                        <input type="text" id="text" name="text" value="{{.Text}}" placeholder="type something..." required maxlength="10000" autofocus>
                     </div>
-                    <div class="char-count" id="charCount">0 / 10000</div>
-                    <div class="limit-msg" id="limitMsg" role="status" aria-live="polite" hidden>You've reached the 10,000 character limit.</div>
                 </div>
 
                 <div class="field">
@@ -103,18 +97,11 @@
             <div class="terminal-bar">
                 <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
                 <span class="title">result &middot; {{.Banner}}</span>
-                <span class="copy-toast" id="copyToast" role="status" aria-live="polite">Copied!</span>
-                <button type="button" class="copy-btn" id="copyBtn" onclick="copyResult()" aria-label="Copy result to clipboard">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    copy
-                </button>
             </div>
             <pre class="result" id="resultText">{{.Result}}</pre>
             <div class="result-cursor-row" aria-hidden="true"><span class="result-cursor">&#9612;</span></div>
         </div>
         {{end}}
     </div>
-
-    <script src="/static/app.js"></script>
 </body>
 </html>

@@ -47,7 +47,7 @@ func main() {
 	fileServer := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 
-	log.Println("Server is running at http://localhost" + port)
+	log.Println("Server is running on http://localhost" + port)
 	if err := http.ListenAndServe(port, mux); err != nil {
 		log.Fatal(err)
 	}
@@ -106,7 +106,10 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !validBanners[bannerName] {
-		renderPage(w, http.StatusBadRequest, PageData{
+		// The subject lists "banners" explicitly as a 404 case (same bucket
+		// as a missing template), not 400 — a banner that doesn't exist is a
+		// "not found" resource, not a malformed request.
+		renderPage(w, http.StatusNotFound, PageData{
 			Text:   rawText,
 			Banner: bannerName,
 			Error:  "Unknown banner: " + bannerName,
@@ -131,13 +134,11 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 
 	chars, err := banner.Load(bannerName)
 	if err != nil {
-		// bannerName is already whitelisted above, so this should not
-		// normally happen — handled anyway to stay safe.
-		renderPage(w, http.StatusBadRequest, PageData{
-			Text:   rawText,
-			Banner: bannerName,
-			Error:  err.Error(),
-		})
+		// bannerName is already whitelisted above, so this only happens if
+		// the embedded banner data itself is broken — that's the server's
+		// fault, not the visitor's request, so it's a 500, not a 400/404.
+		log.Println("banner load error:", err)
+		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
