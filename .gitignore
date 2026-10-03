@@ -1,4 +1,4 @@
-server
+/ascii-art-web
 *.exe
 .DS_Store
 .vscode/

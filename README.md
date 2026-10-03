@@ -58,9 +58,31 @@ banner, and click **Generate**.
 | Situation | Code |
 |---|---|
 | Page loads / conversion succeeds | `200` |
-| Wrong HTTP method, invalid banner, text too long, or unsupported character | `400` |
-| Unknown route, or a missing template file | `404` |
+| Wrong HTTP method, text too long, or unsupported character | `400` |
+| Unknown route, invalid banner, or a missing template file | `404` |
 | An unexpected panic anywhere in a handler | `500` (caught by `recoverFromPanic`) |
+
+### Docker
+
+The project ships with a `Dockerfile`, a `.dockerignore`, and a `build.sh`
+helper script:
+
+- `Dockerfile` — a two-stage build: stage 1 compiles the Go binary on
+  `golang:1.24-alpine`, stage 2 copies only the binary plus `static/` and
+  `templates/` into a small `alpine:3.20` image (the banner `.txt` files are
+  already embedded in the binary).
+- `.dockerignore` — keeps files the image doesn't need (`.git`, `*.md`, the
+  Docker files themselves) out of the build context.
+- `build.sh` — builds the image (`ascii-art-web`), removes any old container,
+  and runs a new one (`aaw-container`) mapping port `8090`.
+
+To build and run it:
+
+```bash
+bash build.sh
+```
+
+Then open `http://localhost:8090`.
 
 ### Notes
 
