@@ -11,6 +11,7 @@ import (
 
 const templatePath = "templates/index.html"
 const notFoundTemplatePath = "templates/404.html"
+const internalErrorTemplatePath = "templates/500.html"
 
 // PageData is everything the HTML template needs. Empty fields are fine:
 // the template shows/hides sections based on them (see {{if .Error}} etc).
@@ -90,6 +91,40 @@ func generate404Sample() string {
 		return ""
 	}
 	out, err := render.Render("404", chars)
+	if err != nil {
+		return ""
+	}
+	return out
+}
+
+// render500 serves the styled 500 page instead of Go's plain default text.
+// The status code is still exactly 500 — only the page's look changes. It
+// takes no *http.Request because recoverFromPanic doesn't have one. If the
+// 500 template itself can't be parsed for any reason, it falls back to the
+// plain text 500 so a broken template file never hides the real error.
+func render500(w http.ResponseWriter) {
+	tmpl, err := template.ParseFiles(internalErrorTemplatePath)
+	if err != nil {
+		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusInternalServerError)
+	data := errorPageData{Sample: generate500Sample()}
+	if err := tmpl.Execute(w, data); err != nil {
+		log.Println("500 template execute error:", err)
+	}
+}
+
+// generate500Sample renders "500" through the exact same banner pipeline as
+// generate404Sample above — same safety guarantee: any failure just means the
+// decoration is skipped, never a different status code.
+func generate500Sample() string {
+	chars, err := banner.Load("standard")
+	if err != nil {
+		return ""
+	}
+	out, err := render.Render("500", chars)
 	if err != nil {
 		return ""
 	}

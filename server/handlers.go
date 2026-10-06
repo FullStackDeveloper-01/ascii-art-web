@@ -26,7 +26,7 @@ var validBanners = map[string]bool{
 func recoverFromPanic(w http.ResponseWriter) {
 	if rec := recover(); rec != nil {
 		log.Println("panic recovered:", rec)
-		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		render500(w)
 	}
 }
 
@@ -104,7 +104,7 @@ func ASCIIArtHandler(w http.ResponseWriter, r *http.Request) {
 		// the embedded banner data itself is broken — that's the server's
 		// fault, not the visitor's request, so it's a 500, not a 400/404.
 		log.Println("banner load error:", err)
-		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		render500(w)
 		return
 	}
 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>500 — ASCII Art Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/img/logo.png">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <nav class="topnav2">
+        <div class="topnav2-brand">
+            <img class="topnav2-mark" src="/static/img/logo.png" alt="01">
+            <div>
+                <div class="topnav2-name">ASCII <span>ART</span></div>
+                <div class="topnav2-sub">01 &middot; WEB</div>
+            </div>
+        </div>
+
+        <div class="kbnav">
+            <span class="kbglow"></span>
+            <a class="kbkey" href="/">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+                <span class="kbkey-name">Home</span>
+                <span class="kbkey-led"></span>
+            </a>
+        </div>
+
+        <div class="status">
+            <span class="dot"></span> <span class="status-text">server online</span>
+        </div>
+    </nav>
+    <div class="topnav2-strip"></div>
+
+    <div class="wrap">
+        <div class="error-page">
+            {{if .Sample}}
+            <pre class="error-ascii" aria-hidden="true">{{.Sample}}</pre>
+            {{end}}
+            <h1>500</h1>
+            <p class="sub">Something went wrong on our end.</p>
+            <a class="back-home" href="/">&larr; Back home</a>
+        </div>
+    </div>
+</body>
+</html>

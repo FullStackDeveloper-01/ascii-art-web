@@ -1,9 +1,3 @@
-/* ---- semantic color system ----
-   --accent / --accent-2 / --accent-dim : brand + interactive (violet)
-   --green                              : success / online / copy confirmation
-   --red                                : error
-   --yellow                             : warning (approaching a limit)
-   Every new component should pull from these tokens instead of a new literal. */
 :root {
     --bg: #08080a;
     --panel: rgba(16, 16, 24, .62);
@@ -39,7 +33,6 @@ body {
     position: relative;
 }
 
-/* ---- subtle film-grain texture over the whole page ---- */
 .grain {
     position: fixed;
     inset: 0;
@@ -50,9 +43,6 @@ body {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* ---- boot sequence: a few lines fade in, then the whole thing fades away —
-   purely cosmetic, pointer-events:none from the start so it never blocks the
-   real page underneath, and skipped entirely for reduced-motion users below ---- */
 .boot-overlay {
     position: fixed;
     inset: 0;
@@ -86,8 +76,6 @@ body {
     to { opacity: 0; visibility: hidden; }
 }
 
-
-/* ---- background layer 1: scattered starfield dots + faint violet grid ---- */
 body::before {
     content: '';
     position: fixed;
@@ -113,8 +101,6 @@ body::before {
         600px 600px, 600px 600px, 600px 600px, 600px 600px, 600px 600px, 46px 46px, 46px 46px;
 }
 
-/* ---- background layer 2: slow radar-style scan line sweeping top to bottom.
-   Uses --accent-dim so this also re-tints with the selected banner. ---- */
 body::after {
     content: '';
     position: fixed;
@@ -133,7 +119,6 @@ body::after {
     100% { transform: translateY(calc(100vh + 200px)); }
 }
 
-/* ---- top navbar: exact port of .topnav2 from the 01 Tester project (grid: brand | home button | status) ---- */
 .topnav2 {
     position: sticky;
     top: 0;
@@ -150,9 +135,6 @@ body::after {
     border-bottom: 1px solid var(--border-soft);
 }
 
-/* giant faint "01" watermark behind the navbar content — same effect as the real site's
-   .topnav2::before, always on here since we only ever have one page (no on-landing/on-dashboard
-   toggle needed) */
 .topnav2::before {
     content: '01';
     position: absolute;
@@ -186,8 +168,6 @@ body::after {
     width: 32px;
     height: 32px;
     object-fit: contain;
-    /* glow now follows the selected banner's accent color instead of a fixed
-       violet, so the logo visibly matches whichever "mood" is active */
     filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 20px var(--accent-dim)) drop-shadow(0 0 36px var(--accent-dim));
 }
 
@@ -211,7 +191,6 @@ body::after {
     text-transform: uppercase;
 }
 
-/* ---- center: the single "Home" button + the circular 01 emblem, same as the real site's .kbnav ---- */
 .kbnav {
     display: flex;
     align-items: center;
@@ -249,9 +228,6 @@ body::after {
     letter-spacing: 0.02em;
 }
 
-/* always lit — this is our only page, so the "active" led never turns off.
-   Uses --accent (not a fixed color) so it re-tints with the selected banner,
-   same as everything else in the "mood" system below. */
 .kbkey-led {
     position: absolute;
     bottom: -6px;
@@ -264,8 +240,6 @@ body::after {
     box-shadow: 0 0 8px var(--accent);
 }
 
-/* the spotlight beam above the active key — ported from the 01 Tester navbar's .kbglow, always on
-   here since Home is the only (and permanently active) destination */
 .kbglow {
     position: absolute;
     top: -14px;
@@ -292,7 +266,6 @@ body::after {
     background: linear-gradient(to bottom, var(--accent-dim), transparent);
 }
 
-/* ---- glowing violet line under the navbar (same as the real site's .topnav2-strip) ---- */
 .topnav2-strip {
     width: 100%;
     height: 2px;
@@ -349,8 +322,6 @@ body::after {
     z-index: 1;
 }
 
-/* ---- 404 page: same shell (nav + watermark + grain), just a centered
-   message instead of the generator panel ---- */
 .error-page {
     text-align: center;
     padding: 80px 20px 120px;
@@ -396,12 +367,6 @@ body::after {
     border-color: var(--accent);
 }
 
-/* ---- a small mood shift per banner style: whichever radio is checked re-tints
-   the accent tokens for everything inside .wrap (input focus ring, selected
-   banner pill, submit button, terminal border). Pure CSS, no JS. Falls back
-   gracefully to the default violet in browsers without :has() support. ---- */
-/* Scoped to body (not just .wrap) so the navbar's glow/LED — which sit
-   outside .wrap in the markup — re-tint too, not just the form below them. */
 body:has(#b-shadow:checked) {
     --accent: #dc2626;
     --accent-2: #f87171;
@@ -439,9 +404,6 @@ h1 {
     color: transparent;
 }
 
-/* the live "01" preview, rendered server-side by the same banner/render
-   pipeline as every real submission — tiny and dim, a signature rather than
-   a second focal point. Hidden on narrow screens where it'd just crowd the title. */
 .hero-sample {
     margin: 0;
     font-family: var(--mono);
@@ -450,10 +412,6 @@ h1 {
     color: var(--accent);
     flex-shrink: 0;
     user-select: none;
-}
-
-@media (max-width: 620px) {
-    .hero-sample { display: none; }
 }
 
 .sub {
@@ -670,7 +628,7 @@ pre.result {
 }
 
 @media (max-width: 620px) {
-    .kbnav { display: none; }
+    .hero-sample, .kbnav { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -682,9 +640,6 @@ pre.result {
     .panel { padding: 18px; }
 }
 
-/* ---- respect "reduce motion": skip the boot intro entirely (show the real
-   page immediately) and turn off the ambient animations, without ever
-   leaving anything permanently hidden ---- */
 @media (prefers-reduced-motion: reduce) {
     .boot-overlay { display: none; }
     body::after { animation: none; opacity: 0; }
