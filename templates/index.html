@@ -13,7 +13,7 @@
 <body>
     <div class="grain" aria-hidden="true"></div>
 
-    {{if not .Result}}
+    {{if and (not .Result) (not .Error)}}
 
     <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
         <div class="boot-line" style="--d:0s">$ connecting to server01...</div>

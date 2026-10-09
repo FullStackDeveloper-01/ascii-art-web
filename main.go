@@ -15,7 +15,14 @@ func main() {
 	mux.HandleFunc("/ascii-art", server.ASCIIArtHandler)
 
 	fileServer := http.FileServer(http.Dir("static"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	staticHandler := http.StripPrefix("/static/", fileServer)
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "400 Bad Request: use GET", http.StatusBadRequest)
+			return
+		}
+		staticHandler.ServeHTTP(w, r)
+	})
 
 	log.Println("Server is running on http://localhost" + port)
 	if err := http.ListenAndServe(port, mux); err != nil {
