@@ -41,6 +41,8 @@
         <div class="error-page">
             {{if .Sample}}
             <pre class="error-ascii" aria-hidden="true">{{.Sample}}</pre>
+            {{else}}
+            <h1>500</h1>
             {{end}}
             <p class="sub">Something went wrong on our end.</p>
             <a class="back-home" href="/">&larr; Back home</a>
