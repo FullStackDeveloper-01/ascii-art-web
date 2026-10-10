@@ -30,6 +30,16 @@ func recoverFromPanic(w http.ResponseWriter) {
 	}
 }
 
+var static = http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
+
+func StaticHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "400 Bad Request: use GET", http.StatusBadRequest)
+		return
+	}
+	static.ServeHTTP(w, r)
+}
+
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	defer recoverFromPanic(w)
 

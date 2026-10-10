@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// statusRecorder remembers the status code the handler sent.
+
 type statusRecorder struct {
 	http.ResponseWriter
 	status int
@@ -21,8 +21,7 @@ func (s *statusRecorder) WriteHeader(code int) {
 	s.ResponseWriter.WriteHeader(code)
 }
 
-// Logger prints one line per request: method, path, status code and time taken.
-// The user's text is never logged.
+
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

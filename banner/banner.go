@@ -19,10 +19,6 @@ var shadowData string
 //go:embed thinkertoy.txt
 var thinkertoyData string
 
-// Known-good SHA-256 of each banner file (computed once with
-// `sha256sum banner/*.txt` while the files were still correct). If a file
-// gets edited later — even a single character, same line count and all —
-// its hash won't match anymore and Load() rejects it.
 const (
 	standardChecksum   = "e194f1033442617ab8a78e1ca63a2061f5cc07a3f05ac226ed32eb9dfd22a6bf"
 	shadowChecksum     = "26b94d0b134b77e9fd23e0360bfd81740f80fb7f6541d1d8c5d85e73ee550f73"

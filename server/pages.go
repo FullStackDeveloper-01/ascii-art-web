@@ -112,7 +112,6 @@ func generate500Sample() string {
 	return out
 }
 
-// serveDownload sends the result as a .txt file instead of showing it on the page.
 func serveDownload(w http.ResponseWriter, results []BannerResult) {
 	var body strings.Builder
 	for i, res := range results {
