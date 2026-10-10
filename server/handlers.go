@@ -1,9 +1,11 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
+	"unicode/utf8"
 
 	"ascii-art-web/banner"
 	"ascii-art-web/render"
@@ -11,7 +13,7 @@ import (
 
 const maxLength = 10000
 
-const maxBodyBytes = 64 << 10
+const maxBodyBytes = 1 << 20
 
 var validBanners = map[string]bool{
 	"standard":   true,
@@ -84,11 +86,11 @@ func ASCIIArtHandler(w http.ResponseWriter, r *http.Request) {
 
 	text := strings.ReplaceAll(rawText, `\n`, "\n")
 
-	if len(text) > maxLength {
+	if count := utf8.RuneCountInString(text); count > maxLength {
 		renderPage(w, http.StatusBadRequest, PageData{
 			Text:   rawText,
 			Banner: bannerName,
-			Error:  "Text is too long",
+			Error:  fmt.Sprintf("Text is too long: %d characters (the limit is %d)", count, maxLength),
 		})
 		return
 	}
