@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"ascii-art-web/banner"
 	"ascii-art-web/render"
@@ -14,11 +16,17 @@ const notFoundTemplatePath = "templates/404.html"
 const internalErrorTemplatePath = "templates/500.html"
 
 type PageData struct {
-	Text   string
-	Banner string
-	Result string
-	Error  string
-	Sample string
+	Text    string
+	Banner  string
+	Result  string
+	Results []BannerResult
+	Error   string
+	Sample  string
+}
+
+type BannerResult struct {
+	Name string
+	Art  string
 }
 
 func renderPage(w http.ResponseWriter, status int, data PageData) {
@@ -102,4 +110,26 @@ func generate500Sample() string {
 		return ""
 	}
 	return out
+}
+
+// serveDownload sends the result as a .txt file instead of showing it on the page.
+func serveDownload(w http.ResponseWriter, results []BannerResult) {
+	var body strings.Builder
+	for i, res := range results {
+		if len(results) > 1 {
+			if i > 0 {
+				body.WriteString("\n")
+			}
+			body.WriteString("=== " + res.Name + " ===\n")
+		}
+		body.WriteString(res.Art)
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Disposition", `attachment; filename="ascii-art.txt"`)
+	w.Header().Set("Content-Length", strconv.Itoa(body.Len()))
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write([]byte(body.String())); err != nil {
+		log.Println("download write error:", err)
+	}
 }

@@ -13,7 +13,7 @@
 <body>
     <div class="grain" aria-hidden="true"></div>
 
-    {{if and (not .Result) (not .Error)}}
+    {{if and (not .Result) (not .Results) (not .Error)}}
 
     <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
         <div class="boot-line" style="--d:0s">$ connecting to server01...</div>
@@ -85,10 +85,14 @@
 
                         <input type="radio" id="b-thinkertoy" name="banner" value="thinkertoy" {{if eq .Banner "thinkertoy"}}checked{{end}}>
                         <label for="b-thinkertoy">thinkertoy</label>
+
+                        <input type="radio" id="b-all" name="banner" value="all" {{if eq .Banner "all"}}checked{{end}}>
+                        <label for="b-all">all banners</label>
                     </div>
                 </div>
 
                 <button type="submit">Generate →</button>
+                <button type="submit" name="action" value="download" class="btn-secondary">Download .txt</button>
             </form>
         </div>
 
@@ -100,6 +104,16 @@
             </div>
             <pre class="result" id="resultText">{{.Result}}</pre>
             <div class="result-cursor-row" aria-hidden="true"><span class="result-cursor">&#9612;</span></div>
+        </div>
+        {{end}}
+
+        {{range .Results}}
+        <div class="terminal">
+            <div class="terminal-bar">
+                <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                <span class="title">result &middot; {{.Name}}</span>
+            </div>
+            <pre class="result">{{.Art}}</pre>
         </div>
         {{end}}
     </div>

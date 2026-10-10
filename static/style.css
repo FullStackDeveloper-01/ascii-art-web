@@ -543,6 +543,13 @@ button[type="submit"] {
 button[type="submit"]:hover { filter: brightness(1.08); }
 button[type="submit"]:active { transform: scale(0.99); }
 
+button.btn-secondary {
+    margin-top: 10px;
+    background: transparent;
+    color: var(--accent-2);
+    border: 1px solid var(--accent);
+}
+
 .error {
     display: flex;
     align-items: center;

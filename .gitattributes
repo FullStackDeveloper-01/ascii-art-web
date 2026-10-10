@@ -1,0 +1,2 @@
+# Keep banner files byte-for-byte identical on every OS, or their SHA-256 checksum breaks.
+banner/*.txt -text

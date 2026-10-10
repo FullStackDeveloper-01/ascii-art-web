@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"ascii-art-web/server"
 )
@@ -24,8 +25,17 @@ func main() {
 		staticHandler.ServeHTTP(w, r)
 	})
 
+	srv := &http.Server{
+		Addr:              port,
+		Handler:           server.Logger(mux),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+
 	log.Println("Server is running on http://localhost" + port)
-	if err := http.ListenAndServe(port, mux); err != nil {
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
