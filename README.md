@@ -20,7 +20,7 @@ project only adds the HTTP layer around them.
 ## Authors
 
 - Mohammed Zuhair ([@mozuhair](https://learn.reboot01.com/git/mozuhair))
-- Mustafa Darwish ([@mudarwish]
+- Mustafa Darwish (@mudarwish
 
 ## Usage
 
