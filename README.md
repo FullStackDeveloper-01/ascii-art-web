@@ -58,9 +58,14 @@ banner, and click **Generate**.
 | Situation | Code |
 |---|---|
 | Page loads / conversion succeeds | `200` |
-| Wrong HTTP method, text too long, or unsupported character | `400` |
+| Unsupported HTTP method | `405` with an `Allow` header (`GET` or `POST`) |
+| Text too long or unsupported character | `400` |
 | Unknown route, invalid banner, or a missing template file | `404` |
 | An unexpected panic anywhere in a handler | `500` (caught by `recoverFromPanic`) |
+
+The application accepts only `GET` for pages and static files and `POST` for
+`/ascii-art`. Input is limited to 100 Unicode characters. Request status and
+method errors are also logged in the server terminal.
 
 ### Docker
 

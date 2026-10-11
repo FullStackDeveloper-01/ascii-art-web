@@ -11,7 +11,7 @@ import (
 	"ascii-art-web/render"
 )
 
-const maxLength = 10000
+const maxLength = 100
 
 const maxBodyBytes = 1 << 20
 
@@ -34,7 +34,7 @@ var static = http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
 
 func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "400 Bad Request: use GET", http.StatusBadRequest)
+		methodNotAllowed(w, http.MethodGet)
 		return
 	}
 	static.ServeHTTP(w, r)
@@ -48,7 +48,10 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method != http.MethodGet {
-		http.Error(w, "400 Bad Request: use GET", http.StatusBadRequest)
+		renderPage(w, http.StatusMethodNotAllowed, PageData{
+			Banner: "standard",
+			Error:  "405 Method Not Allowed: use GET",
+		})
 		return
 	}
 
@@ -59,9 +62,16 @@ func ASCIIArtHandler(w http.ResponseWriter, r *http.Request) {
 	defer recoverFromPanic(w)
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "400 Bad Request: use POST", http.StatusBadRequest)
+		w.Header().Set("Allow", http.MethodPost)
+		renderPage(w, http.StatusMethodNotAllowed, PageData{
+			Banner: "standard",
+			Error:  "405 Method Not Allowed: use POST",
+		})
 		return
 	}
+
+	// ParseForm consumes the request body, so this endpoint intentionally
+	// accepts POST only. GET requests are handled above with a 405 response.
 
 	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 
@@ -143,4 +153,9 @@ func ASCIIArtHandler(w http.ResponseWriter, r *http.Request) {
 		data.Result = results[0].Art
 	}
 	renderPage(w, http.StatusOK, data)
+}
+
+func methodNotAllowed(w http.ResponseWriter, allowed string) {
+	w.Header().Set("Allow", allowed)
+	http.Error(w, "405 Method Not Allowed: use "+allowed, http.StatusMethodNotAllowed)
 }
